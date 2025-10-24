@@ -154,8 +154,8 @@ private CartService cartService;
         paymentLinkRequest.put("notify", notify);
 
         paymentLinkRequest.put("reminder_enable", true);
-//        paymentLinkRequest.put("callback_url", "https://efc-app-1.onrender.com/api/v1/payments/webhook");
-//        paymentLinkRequest.put("callback_method", "get");
+        paymentLinkRequest.put("callback_url", "https://efc-app-1.onrender.com/api/v1/payments/webhook");
+        paymentLinkRequest.put("callback_method", "get");
 
         PaymentLink paymentLink = razorpayClient.paymentLink.create(paymentLinkRequest);
 
