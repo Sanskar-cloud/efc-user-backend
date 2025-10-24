@@ -1,28 +1,35 @@
-# Use an official OpenJDK runtime as a base image
-FROM maven:latest AS build
+# ----------------------------
+# Step 1: Build Stage
+# ----------------------------
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 
-
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the pom.xml and source code into the container
+# Copy only pom.xml first (for dependency caching)
 COPY pom.xml .
-COPY src/ ./src/
 
-# Build the JAR file using Maven
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the full source code
+COPY src ./src
+
+# Clean and build the project (skip tests to speed up image build)
 RUN mvn clean package -DskipTests
 
-# Use a smaller base image to run the application
-FROM openjdk:17-jdk-alpine
+# ----------------------------
+# Step 2: Runtime Stage
+# ----------------------------
+FROM eclipse-temurin:17-jdk
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the built JAR file from the build stage
-COPY --from=build /app/target/efc-user-0.0.1-SNAPSHOT.jar app.jar
+# Copy the packaged JAR from the build stage
+COPY --from=build /app/target/*.jar app.jar
 
-# Expose the default port for Spring Boot (8080)
+# Expose your application's port
 EXPOSE 8080
 
-# Run the application
-CMD ["java", "-jar", "app.jar"]
+# Run the JAR
+ENTRYPOINT ["java", "-jar", "app.jar"]
