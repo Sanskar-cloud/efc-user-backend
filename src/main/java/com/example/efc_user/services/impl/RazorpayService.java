@@ -145,7 +145,7 @@ private CartService cartService;
         JSONObject customer = new JSONObject();
         customer.put("name", user.getName());
         customer.put("email", user.getEmail());
-        customer.put("contact", user.getPhone());
+//        customer.put("contact", user.getPhone());
         paymentLinkRequest.put("customer", customer);
 
         JSONObject notify = new JSONObject();
