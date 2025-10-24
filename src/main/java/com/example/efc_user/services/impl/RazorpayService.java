@@ -18,6 +18,7 @@ import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
 import com.stripe.net.Webhook;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+@Slf4j
 @Service
 public class RazorpayService {
 @Autowired
@@ -163,6 +165,7 @@ private CartService cartService;
         // Save transaction
         RazorpayTransaction tx = new RazorpayTransaction();
         tx.setRazorpayOrderId(paymentLinkId);
+        log.info("Created Payment Link ID: {}", paymentLinkId);
         tx.setUserId(user.getId());
         tx.setAmount(totalAmount);
         tx.setStatus(TransactionStatus.PENDING);

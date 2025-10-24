@@ -109,6 +109,8 @@ public class PaymentController {
             @RequestBody String payloadJson
     ) throws Exception {
 
+        log.info("Received Razorpay webhook: {}", payloadJson);
+
         String expectedSignature = hmacSHA256(payloadJson, secret);
         if (!expectedSignature.equals(signature)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid signature");
@@ -132,6 +134,7 @@ public class PaymentController {
         String contact = payment.path("contact").asText();
         String email = payment.path("email").asText();
         String status = payment.path("status").asText();
+        log.info("Processing payment_link.paid for Payment ID: {}, Order ID: {}, Status: {}", paymentId, razorpayOrderId, status);
         String paymentLinkId=paymentLink.path("id").asText();
         String referenceId = paymentLink.path("reference_id").asText();
         String failureReason = payment.path("error_reason").asText(null);
